@@ -53,11 +53,18 @@ max_blue = 14
 
 game_sum = 0
 
+power_sum = 0
+
 for line in input:
   game_no = get_game_no(line)
   blue = get_highest_blue(line)
   green = get_highest_green(line)
   red = get_highest_red(line)
+
+  # PART-2 #
+  power = blue * green * red
+  power_sum += power
+  # /PART-2 #
 
   # if any of the highest number of cubes is greater than its maximum
   # theoretical number of cubes, the game wasn't possible; move on
@@ -67,3 +74,4 @@ for line in input:
   game_sum += game_no
 
 print(f"Part 1: {game_sum}")
+print(f"Part 2: {power_sum}")
