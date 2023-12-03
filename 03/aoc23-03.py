@@ -1,3 +1,4 @@
+import re
 import sys
 
 DEF_FILE = "./input"
@@ -15,9 +16,9 @@ else:
 # a symbol-point is a character which is not `.` or a digit, along with its
 # position in the line
 def symbol_points(line: str):
-  return [ (i, line[i])
-           for i in range(len(line))
-           if not line[i].isdigit() and line[i] != '.'
+  return [ (i, c)
+           for i, c in enumerate(line)
+           if not c.isdigit() and c != '.'
            ]
 
 
@@ -27,6 +28,32 @@ def symbol_points(line: str):
 #       then remove from the list as we find things relative to the
 #       symbol-points.
 #       I _believe_ that should prevent counting duplicates...
+
+def number_points(line: str):
+  no_pts = []
+  pts = []
+  number_str = ""
+  is_fst_digit = True
+
+  for i, c in enumerate(line):
+    if c.isdigit():
+      number_str += c
+      pts.append(i)
+      if is_fst_digit:
+        is_fst_digit = False
+    else:
+      # if c is not a digit, but we have accumulated a number
+      if number_str != "":
+        # add the new number-point to the list
+        no_pts.append(
+          (pts, int(number_str))
+        )
+        # reset the accumulators and flag
+        pts = []
+        number_str = ""
+        is_fst_digit = True
+
+  return no_pts
 
 
 # SOLUTION #
@@ -54,7 +81,11 @@ input_array = []
 for line in input:
 
   sym_pts = symbol_points(line)
+  no_pts = number_points(line)
 
+  print(f"Sym: {sym_pts}\nNo: {no_pts}\n")
+
+  # TODO: do I still need this with the new idea?
   # store the line
   input_array.append(line)
 
