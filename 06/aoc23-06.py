@@ -1,5 +1,7 @@
 import sys
+import operator
 from math import sqrt, ceil, floor
+from functools import reduce
 
 DEF_FILE = "./input"
 
@@ -73,11 +75,17 @@ def total_possible_ways(vals: list[(int, int)]):
   return total
 
 
+# Part 2 #
+
+# We'll just do the same as part 1, but folding onto the empty string
+def rm_bad_kerning(raw_line: str):
+  # okay, I may have been doing too much functional programming...
+  return reduce(operator.add, raw_line.split()[1:], "")
+
+
 # SOLUTION #
 
 lines = input.readlines()
-## # FIXME: For testing only
-## lines = ["Time:      7  15   30", "Distance:  9  40  200"]
 
 # oh Python, I've missed our fun little one-line list comprehension shenanigans
 prev_records = [(int(t), int(d)) for t, d in zip(lines[0].split()[1:],
@@ -88,3 +96,11 @@ roots = [rødder(d, t) for t, d in prev_records]
 nice_roots = [(ceil(r1 - 1), floor(r2 + 1)) for r1, r2 in roots]
 
 print("Part 1:", total_possible_ways(nice_roots))
+
+unkerned_race = (rm_bad_kerning(lines[0]), rm_bad_kerning(lines[1]))
+# Oh wow! Python's type-hints actually came in useful!
+new_roots = rødder(int(unkerned_race[1]), int(unkerned_race[0]))
+nice_new_roots = ceil(new_roots[0] - 1), floor(new_roots[1] + 1)
+
+# And now just pass a simple singleton list
+print("Part 2:", total_possible_ways([nice_new_roots]))
