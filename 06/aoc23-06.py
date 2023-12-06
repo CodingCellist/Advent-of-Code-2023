@@ -56,12 +56,12 @@ def calc_total_dist(speed: int, time_remaining: int):
 #
 #   a := -1
 #   b := tid
-#   c := dist
+#   c := -dist
 #
 # Hvordan ser det ud?...
 
 def løs(dist: int, tid: int):
-  d = (tid ** 2) - 4 * (-1) * dist
+  d = (tid ** 2) - 4 * (-1) * (-dist)
   if d < 0:
     print("Unreal!!")
     exit(1)
