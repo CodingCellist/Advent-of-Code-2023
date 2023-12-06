@@ -1,5 +1,5 @@
 import sys
-from math import sqrt
+from math import sqrt, ceil, floor
 
 DEF_FILE = "./input"
 
@@ -60,6 +60,7 @@ def calc_total_dist(speed: int, time_remaining: int):
 #
 # Hvordan ser det ud?...
 
+# HA! Python supports non-ascii function names ^^   (it means "solve" in Danish)
 def løs(dist: int, tid: int):
   d = (tid ** 2) - 4 * (-1) * (-dist)
   if d < 0:
@@ -81,4 +82,13 @@ lines = ["Time:      7  15   30", "Distance:  9  40  200"]
 pairs = [(int(t), int(d)) for t, d in zip(lines[0].split()[1:],
                                           lines[1].split()[1:])]
 for t, d in pairs:
-  print(løs(d, t))
+  r1, r2 = løs(d, t)
+  print((r1, r2))
+  # not quite right:
+  # 1:  5.3 > 5  ,  1.7 < 2
+  # 2: 11.5 > 11 ,  3.5 < 4
+  # 3: 20.0 > 19 , 10.0 < 11
+  #
+  # oh but that's okay? ceil(r1 - 1),  floor(r2 + 1) ?
+  print((ceil(r1 - 1), floor(r2 + 1)))
+  print("-----")
