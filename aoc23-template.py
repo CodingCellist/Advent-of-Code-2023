@@ -13,4 +13,8 @@ else:
 
 # SOLUTION #
 
+# FIXME: only for testing
+input = [ ""
+        ]
+
 for line in input:
