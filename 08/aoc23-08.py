@@ -14,9 +14,6 @@ else:
 
 # Part 1 #
 
-n_steps = 0
-
-
 def add_map_entry(the_map: dict[str, (str, str)], raw_entry: str):
   # we can get the raw entries by splitting on whitespace, and removing the '='
   parts = [part for part in raw_entry.split() if part != '=']
@@ -43,6 +40,29 @@ def steps_to_dest(our_map: dict[str, (str, str)], inf_dirns: cycle,
     steps_taken += 1
 
 
+# Part 2 #
+
+def get_starting_posns(our_map: dict[str, (str, str)]):
+  return [k for k in our_map.keys() if k[-1] == 'A']
+
+
+# all positions are done iff they all end in 'Z'
+def all_done(posns: list[str]):
+  done = True
+  for posn in posns:
+    done = done and (posn[-1] == 'Z')
+    if not done:
+      break
+  return done
+
+
+def ghost_traversal(our_map: dict[str, (str, str)], inf_dirns: cycle,
+                    curr_posns: list[str]):
+  steps_taken = 0
+  for posn in curr_posns:
+    if all_done(curr_posns):
+      return -1
+    # yeah no, this is going to blow up _super_ fast...
 
 # SOLUTION #
 
