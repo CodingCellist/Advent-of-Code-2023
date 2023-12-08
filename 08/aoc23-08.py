@@ -1,6 +1,7 @@
 import sys
 # heck yeah, let's do some streams!
 from itertools import cycle
+import math
 
 DEF_FILE = "./input"
 
@@ -144,4 +145,9 @@ if dirn_cycle is None or raw_dirns is None:
 
 ### print("Part 1:", steps_to_dest(map_dict, dirn_cycle))
 
-print("Part 2 cycles:", ghost_traverse(map_dict, raw_dirns))
+part2_cycles = ghost_traverse(map_dict, raw_dirns)
+print("Part 2 cycles:", part2_cycles)
+# I love the python stdlib  <3
+# (Oh and I hate the cryptic asterisk operator; very useful for unpacking the
+# values here, absolutely, but also very cursed...)
+print("Part 2:", math.lcm(*part2_cycles.values()))
