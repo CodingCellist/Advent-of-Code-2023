@@ -46,23 +46,37 @@ def get_starting_posns(our_map: dict[str, (str, str)]):
   return [k for k in our_map.keys() if k[-1] == 'A']
 
 
-# all positions are done iff they all end in 'Z'
-def all_done(posns: list[str]):
-  done = True
-  for posn in posns:
-    done = done and (posn[-1] == 'Z')
-    if not done:
-      break
-  return done
+# Slightly different from `steps_to_dest`, since the destination does not
+# have to be triple 'Z', it just has to end in 'Z'.
+# **AND** since the directions stream needs to be restarted at each step
+# (fortunately small enough that that's not bad).
+def ghost_n_steps(our_map: dict[str, (str, str)], raw_dirns: cycle, posn: str):
+  n_steps = 0
+  for dirn in cycle(raw_dirns):
+    if posn[-1] == 'Z':
+      return n_steps
+
+    lr_idx = 0 if dirn == 'L' else 1
+    posn = our_map[posn][lr_idx]
+    n_steps += 1
 
 
-def ghost_traversal(our_map: dict[str, (str, str)], inf_dirns: cycle,
-                    curr_posns: list[str]):
-  steps_taken = 0
-  for posn in curr_posns:
-    if all_done(curr_posns):
-      return -1
-    # yeah no, this is going to blow up _super_ fast...
+#
+def ghost_traverse(our_map: dict[str, (str, str)], raw_dirns: str):
+  start_posns = get_starting_posns(our_map)
+  # Not all paths sync up at the same time, but surely we can cache/record
+  # the length of the ones we've encountered?...
+  # Hey! Hey hey hey! The paths which do not sync up immediately seem to repeat!
+  path_cycles = dict()    # using starting position as key?
+  while start_posns != []:
+    start_posn = start_posns.pop(0)
+    path_len = ghost_n_steps(our_map, raw_dirns, start_posn)
+
+    print(f"Cycle of {path_len} found for {start_posn}!")
+
+    path_cycles[start_posn] = path_len
+
+  return path_cycles
 
 # SOLUTION #
 
@@ -85,11 +99,23 @@ def ghost_traversal(our_map: dict[str, (str, str)], inf_dirns: cycle,
 ###          , "ZZZ = (ZZZ, ZZZ)"
 ###          ]
 ###
-### input = input6
+part2_input = [ "LR"
+              , ""
+              , "11A = (11B, XXX)"
+              , "11B = (XXX, 11Z)"
+              , "11Z = (11B, XXX)"
+              , "22A = (22B, XXX)"
+              , "22B = (22C, 22C)"
+              , "22C = (22Z, 22Z)"
+              , "22Z = (22B, 22B)"
+              , "XXX = (XXX, XXX)"
+              ]
+# input = part2_input
 
 first_line = True
 map_dict = dict()
 dirn_cycle = None
+raw_dirns = None
 
 lcount = 0
 
@@ -99,6 +125,7 @@ for line in input:
   # initialise the cycle of directions
   if first_line:
     dirn_cycle = cycle(line)
+    raw_dirns = line
     first_line = False
     lcount += 1
     continue
@@ -111,11 +138,10 @@ for line in input:
   add_map_entry(map_dict, line)
   lcount += 1
 
-if dirn_cycle is None:
-  print("FATAL: Never created the directions cycle")
+if dirn_cycle is None or raw_dirns is None:
+  print(f"[FATAL] dirn_cycle={dirn_cycle}  raw_dirns={raw_dirns}")
   exit(1)
 
-print("Part 1:", steps_to_dest(map_dict, dirn_cycle))
+### print("Part 1:", steps_to_dest(map_dict, dirn_cycle))
 
-# Part 2 exploration
-print("Ends in 'A':", len([k for k in map_dict.keys() if k[-1] == 'A']))
+print("Part 2 cycles:", ghost_traverse(map_dict, raw_dirns))
