@@ -43,6 +43,7 @@ def steps_to_dest(our_map: dict[str, (str, str)], inf_dirns: cycle,
     steps_taken += 1
 
 
+
 # SOLUTION #
 
 ### # FIXME: only for testing
@@ -95,3 +96,6 @@ if dirn_cycle is None:
   exit(1)
 
 print("Part 1:", steps_to_dest(map_dict, dirn_cycle))
+
+# Part 2 exploration
+print("Ends in 'A':", len([k for k in map_dict.keys() if k[-1] == 'A']))
