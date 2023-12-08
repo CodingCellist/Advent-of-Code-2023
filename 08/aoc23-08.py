@@ -1,7 +1,7 @@
 import sys
 # heck yeah, let's do some streams!
 from itertools import cycle
-import math
+import math   # for `math.lcm`; I love the python stdlib  <3
 
 DEF_FILE = "./input"
 
@@ -62,56 +62,23 @@ def ghost_n_steps(our_map: dict[str, (str, str)], raw_dirns: cycle, posn: str):
     n_steps += 1
 
 
-#
+
 def ghost_traverse(our_map: dict[str, (str, str)], raw_dirns: str):
   start_posns = get_starting_posns(our_map)
   # Not all paths sync up at the same time, but surely we can cache/record
   # the length of the ones we've encountered?...
   # Hey! Hey hey hey! The paths which do not sync up immediately seem to repeat!
-  path_cycles = dict()    # using starting position as key?
+  path_cycles = dict()    # using starting position as key
   while start_posns != []:
     start_posn = start_posns.pop(0)
     path_len = ghost_n_steps(our_map, raw_dirns, start_posn)
-
-    print(f"Cycle of {path_len} found for {start_posn}!")
 
     path_cycles[start_posn] = path_len
 
   return path_cycles
 
-# SOLUTION #
 
-### # FIXME: only for testing
-### input2 = [ "RL"
-###          , ""
-###          , "AAA = (BBB, CCC)"
-###          , "BBB = (DDD, EEE)"
-###          , "CCC = (ZZZ, GGG)"
-###          , "DDD = (DDD, DDD)"
-###          , "EEE = (EEE, EEE)"
-###          , "GGG = (GGG, GGG)"
-###          , "ZZZ = (ZZZ, ZZZ)"
-###          ]
-###
-### input6 = [ "LLR"
-###          , ""
-###          , "AAA = (BBB, BBB)"
-###          , "BBB = (AAA, ZZZ)"
-###          , "ZZZ = (ZZZ, ZZZ)"
-###          ]
-###
-part2_input = [ "LR"
-              , ""
-              , "11A = (11B, XXX)"
-              , "11B = (XXX, 11Z)"
-              , "11Z = (11B, XXX)"
-              , "22A = (22B, XXX)"
-              , "22B = (22C, 22C)"
-              , "22C = (22Z, 22Z)"
-              , "22Z = (22B, 22B)"
-              , "XXX = (XXX, XXX)"
-              ]
-# input = part2_input
+# SOLUTION #
 
 first_line = True
 map_dict = dict()
@@ -143,11 +110,12 @@ if dirn_cycle is None or raw_dirns is None:
   print(f"[FATAL] dirn_cycle={dirn_cycle}  raw_dirns={raw_dirns}")
   exit(1)
 
-### print("Part 1:", steps_to_dest(map_dict, dirn_cycle))
+print("Part 1:", steps_to_dest(map_dict, dirn_cycle))
 
+# Find all the cycles in the map.
 part2_cycles = ghost_traverse(map_dict, raw_dirns)
-print("Part 2 cycles:", part2_cycles)
-# I love the python stdlib  <3
-# (Oh and I hate the cryptic asterisk operator; very useful for unpacking the
-# values here, absolutely, but also very cursed...)
-print("Part 2:", math.lcm(*part2_cycles.values()))
+# And then find the steps before they'd all sync up. Done via the Least Common
+# Multiple (LCM), apparently; good to know. (The `*` operator unpacks  the
+# values into positional arguments.)
+n_steps_to_sync = math.lcm(*part2_cycles.values())
+print("Part 2:", n_steps_to_sync)
