@@ -44,21 +44,31 @@ def extrapolate(seqs: deque[list[int]]) -> int:
 
 
 
+# Part 2 #
+
+# Given a list of sequences, extrapolate the previous value
+def back_extrapolate(seqs: deque[list[int]]) -> int:
+  val = None
+  # as with `extrapolate`, just negative/subtracting and with index 0
+  for seq in seqs:
+    step = seq[0]
+    if val is None:
+      val = step
+    else:
+      val = step - val
+  return val
+
+
 # SOLUTION #
 
-# FIXME: only for testing
-##input = [ "0 3 6 9 12 15"
-##        , "1 3 6 10 15 21"
-##        , "10 13 16 21 30 45"
-##        ]
-
 extrap_sum = 0
+bextrap_sum = 0
 
 for line in input:
   hist = [int(i) for i in line.split()]
   seqs = find_seqs(hist, deque([hist]))
-  ##print(seqs)
-  ##print(extrapolate(seqs))
   extrap_sum += extrapolate(seqs)
+  bextrap_sum += back_extrapolate(seqs)
 
 print(f"Part 1: {extrap_sum}")
+print(f"Part 2: {bextrap_sum}")
